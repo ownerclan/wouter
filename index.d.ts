@@ -13,10 +13,12 @@ import {
 export type Params = { [paramName: string]: string } | null;
 export type Path = string;
 export type PushCallback = (to: string, replace?: boolean) => void;
-export type LocationTuple = [Path, PushCallback];
+export type LocationTuple = [Path, PushCallback, string];
 export type Match = [boolean, Params];
 export type MatcherFn = (pattern: string, path: Path) => Match;
 export type LocationHook = () => LocationTuple;
+export type SearchParams<Params> = Array<readonly [Params, string]>;
+export type SearchParamsHook<Params extends string> = () => [SearchParams<Params>, React.Dispatch<SearchParams<Params>>];
 
 export interface RouteProps {
   children?: ((params: Params) => ReactNode) | ReactNode;
@@ -48,6 +50,7 @@ export const Switch: FunctionComponent<SwitchProps>;
 
 export interface RouterProps {
   hook: LocationHook;
+  searchParamsHook: SearchParamsHook<string>;
   matcher: MatcherFn;
 }
 export const Router: FunctionComponent<
@@ -61,3 +64,5 @@ export function useRouter(): RouterProps;
 export function useRoute(pattern: string): Match;
 
 export function useLocation(): LocationTuple;
+
+export function useSearchParams<Params extends string>(): ReturnType<SearchParamsHook<Params>>;

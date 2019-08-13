@@ -1,4 +1,5 @@
 import locationHook from "./use-location.js";
+import searchParamsHook from "./use-search-params.js";
 import makeMatcher from "./matcher.js";
 
 import {
@@ -25,6 +26,7 @@ const RouterCtx = createContext({});
 const buildRouter = (options = {}) => {
   return {
     hook: options.hook || locationHook,
+    searchParamsHook: options.searchParamsHook || searchParamsHook,
     matcher: options.matcher || makeMatcher()
   };
 };
@@ -42,11 +44,16 @@ export const useLocation = () => {
   return router.hook(router);
 };
 
+export const useSearchParams = () => {
+  const router = useRouter();
+  return router.searchParamsHook(router);
+};
+
 export const useRoute = pattern => {
   const router = useRouter();
-  const [path] = useLocation();
+  const [location] = useLocation();
 
-  return router.matcher(pattern, path);
+  return router.matcher(pattern, location);
 };
 
 /*
